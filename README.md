@@ -304,6 +304,102 @@ $textToImage = Bytez::textToImage('stability-ai/stable-diffusion');
 $response = $textToImage->generate('A beautiful sunset');
 ```
 
+### Task-Specific Helpers
+
+The package provides dedicated helper methods for common tasks:
+
+#### Text Tasks
+
+```php
+// Summarization
+$summary = Bytez::summarize('model-id', 'Long text to summarize...');
+
+// Translation
+$translated = Bytez::translate('model-id', 'Hello', 'fr'); // Translate to French
+
+// Question Answering
+$answer = Bytez::answerQuestion('model-id', 'What is AI?', 'Context about AI...');
+
+// Feature Extraction
+$features = Bytez::extractFeatures('model-id', 'Text to extract features from');
+
+// Sentence Similarity
+$similarity = Bytez::sentenceSimilarity('model-id', 'Sentence 1', 'Sentence 2');
+
+// Zero-shot Classification
+$classification = Bytez::zeroShotClassify('model-id', 'Text', ['positive', 'negative']);
+
+// Text Classification
+$classification = Bytez::classifyText('model-id', 'Text to classify');
+
+// Token Classification (NER, POS)
+$tokens = Bytez::classifyTokens('model-id', 'Text with entities');
+
+// Fill Mask
+$filled = Bytez::fillMask('model-id', 'The capital of France is [MASK].');
+```
+
+#### Multimodal Text Tasks
+
+```php
+// Audio to Text
+$text = Bytez::audioTextToText('model-id', $audioData);
+
+// Image to Text
+$text = Bytez::imageTextToText('model-id', $imageData, 'Describe this image');
+
+// Video to Text
+$text = Bytez::videoTextToText('model-id', $videoData, 'What is happening?');
+```
+
+#### Image Tasks
+
+```php
+// Image to Text
+$text = Bytez::imageToText('model-id', $imageData, 'What is in this image?');
+
+// Zero-shot Object Detection
+$objects = Bytez::zeroShotDetectObjects('model-id', $imageData, ['person', 'car', 'bike']);
+
+// Zero-shot Image Classification
+$classification = Bytez::zeroShotClassifyImage('model-id', $imageData, ['cat', 'dog']);
+
+// Extract Image Features
+$features = Bytez::extractImageFeatures('model-id', $imageData);
+
+// Image Segmentation
+$segments = Bytez::segmentImage('model-id', $imageData);
+
+// Depth Estimation
+$depth = Bytez::estimateDepth('model-id', $imageData);
+
+// Generate Mask
+$mask = Bytez::generateMask('model-id', $imageData);
+
+// Unconditional Image Generation
+$image = Bytez::generateImageUnconditional('model-id');
+```
+
+#### Audio Tasks
+
+```php
+// Text to Speech
+$audio = Bytez::textToSpeech('model-id', 'Text to convert to speech');
+
+// Text to Audio
+$audio = Bytez::textToAudio('model-id', 'Text to convert to audio');
+```
+
+#### Multimodal Tasks
+
+```php
+// Document Question Answering
+$answer = Bytez::answerDocumentQuestion('model-id', 'What is the main topic?', $documentData);
+
+// Visual Question Answering
+$answer = Bytez::answerVisualQuestion('model-id', 'What color is the car?', $imageData);
+```
+
 ### Listing Models and Tasks
 
 ```php
@@ -362,6 +458,198 @@ The package includes automatic retry logic:
 - Retry with exponential backoff
 - Special handling for rate limits (429)
 - Configuration via `retry_attempts` and `retry_delay`
+
+### Real-World Examples
+
+#### Content Moderation
+
+```php
+// Check if content is safe
+$moderation = Bytez::zeroShotClassify(
+    'facebook/bart-large-mnli',
+    $userContent,
+    ['safe', 'spam', 'hate_speech', 'violence']
+);
+
+if ($moderation['output'][0]['label'] !== 'safe') {
+    // Flag for review
+}
+```
+
+#### Product Image Analysis
+
+```php
+// Analyze product images
+$imageData = base64_encode(file_get_contents('product.jpg'));
+
+// Get description
+$description = Bytez::imageToText(
+    'Salesforce/blip-image-captioning-base',
+    $imageData,
+    'Describe this product'
+);
+
+// Detect objects
+$objects = Bytez::zeroShotDetectObjects(
+    'facebook/detr-resnet-50',
+    $imageData,
+    ['product', 'person', 'background']
+);
+
+// Classify category
+$category = Bytez::zeroShotClassifyImage(
+    'openai/clip-vit-base-patch32',
+    $imageData,
+    ['electronics', 'clothing', 'food', 'furniture']
+);
+```
+
+#### Multi-language Support
+
+```php
+// Translate content to multiple languages
+$text = "Hello, welcome to our store!";
+$languages = ['fr', 'es', 'de', 'it'];
+
+$translations = [];
+foreach ($languages as $lang) {
+    $model = match($lang) {
+        'fr' => 'Helsinki-NLP/opus-mt-en-fr',
+        'es' => 'Helsinki-NLP/opus-mt-en-es',
+        'de' => 'Helsinki-NLP/opus-mt-en-de',
+        'it' => 'Helsinki-NLP/opus-mt-en-it',
+    };
+    
+    $translations[$lang] = Bytez::translate($model, $text, $lang)['output'];
+}
+```
+
+#### Batch Processing
+
+```php
+// Process multiple items efficiently
+$articles = ['Article 1...', 'Article 2...', 'Article 3...'];
+
+$summaries = [];
+foreach ($articles as $id => $article) {
+    $summaries[$id] = Bytez::summarize(
+        'facebook/bart-large-cnn',
+        $article,
+        ['max_length' => 150]
+    )['output'];
+}
+```
+
+#### Semantic Search
+
+```php
+// Create embeddings for search
+$queryEmbedding = Bytez::extractFeatures(
+    'sentence-transformers/all-MiniLM-L6-v2',
+    'search query'
+)['output'];
+
+$documentEmbedding = Bytez::extractFeatures(
+    'sentence-transformers/all-MiniLM-L6-v2',
+    'document text'
+)['output'];
+
+// Calculate similarity (cosine similarity)
+$similarity = $this->cosineSimilarity($queryEmbedding, $documentEmbedding);
+```
+
+#### Audio Processing Pipeline
+
+```php
+// Transcribe audio
+$audioData = base64_encode(file_get_contents('recording.mp3'));
+$transcription = Bytez::audio('openai/whisper')
+    ->withProviderKey(env('OPENAI_API_KEY'))
+    ->transcribe($audioData)['output'];
+
+// Summarize transcription
+$summary = Bytez::summarize(
+    'facebook/bart-large-cnn',
+    $transcription
+)['output'];
+
+// Extract key entities
+$entities = Bytez::classifyTokens(
+    'dbmdz/bert-large-cased-finetuned-conll03-english',
+    $transcription
+)['output'];
+```
+
+#### Advanced Chat with Context
+
+```php
+// Chat with memory and context
+$conversation = Bytez::chatCompletions('openai/gpt-4')
+    ->system('You are a helpful assistant with access to product database.')
+    ->user('What products do you have?')
+    ->assistant('We have electronics, clothing, and books.')
+    ->user('Tell me about electronics')
+    ->maxTokens(200)
+    ->temperature(0.7)
+    ->create();
+
+$response = $conversation['choices'][0]['message']['content'];
+```
+
+#### Image Generation with Parameters
+
+```php
+// Generate image with specific parameters
+$image = Bytez::textToImage('stability-ai/stable-diffusion')
+    ->generate('A futuristic city at sunset', [
+        'width' => 1024,
+        'height' => 1024,
+        'num_inference_steps' => 50,
+        'guidance_scale' => 7.5
+    ]);
+
+// Save generated image
+file_put_contents('generated.jpg', base64_decode($image['output']));
+```
+
+#### Question Answering with Documents
+
+```php
+// Answer questions from document
+$document = base64_encode(file_get_contents('document.pdf'));
+
+$answer = Bytez::answerDocumentQuestion(
+    'impira/layoutlm-document-qa',
+    'What is the main topic discussed?',
+    $document
+)['output'];
+```
+
+#### Sentiment Analysis for Reviews
+
+```php
+// Analyze customer reviews
+$reviews = [
+    'Great product, highly recommend!',
+    'Not what I expected, poor quality',
+    'Average product, nothing special'
+];
+
+$sentiments = [];
+foreach ($reviews as $review) {
+    $result = Bytez::zeroShotClassify(
+        'facebook/bart-large-mnli',
+        $review,
+        ['positive', 'negative', 'neutral']
+    );
+    
+    $sentiments[] = [
+        'review' => $review,
+        'sentiment' => $result['output'][0]['label'],
+        'confidence' => $result['output'][0]['score']
+    ];
+}
+```
 
 ## 🧪 Tests
 
