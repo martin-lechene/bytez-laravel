@@ -653,19 +653,39 @@ foreach ($reviews as $review) {
 
 ## 🧪 Tests
 
+Run the test suite:
+
 ```bash
 composer test
 ```
 
+Run tests with coverage:
+
+```bash
+composer test:coverage
+```
+
+Run only unit tests:
+
+```bash
+composer test:unit
+```
+
 ## 📝 License
 
-MIT
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to open an issue or pull request.
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+## 🔒 Security
+
+If you discover a security vulnerability, please email contact+bytez@doganddev.eu instead of using the issue tracker. See [SECURITY.md](SECURITY.md) for more information.
 
 ## 🔗 Links
 
 - [Bytez Documentation](https://docs.bytez.com)
 - [API Dashboard](https://dashboard.bytez.com)
+- [GitHub Repository](https://github.com/martin-lechene/laravel-bytez)
+- [Issue Tracker](https://github.com/martin-lechene/laravel-bytez/issues)
