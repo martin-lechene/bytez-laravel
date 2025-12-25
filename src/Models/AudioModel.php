@@ -51,4 +51,20 @@ class AudioModel extends BaseModel
     {
         return $this->run($audio, $parameters);
     }
+
+    /**
+     * Text to speech conversion.
+     */
+    public function textToSpeech(string $text, array $parameters = []): array
+    {
+        return $this->run($text, $parameters);
+    }
+
+    /**
+     * Text to audio conversion.
+     */
+    public function textToAudio(string $text, array $parameters = []): array
+    {
+        return $this->run($text, $parameters);
+    }
 }

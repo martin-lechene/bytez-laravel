@@ -35,4 +35,22 @@ class MultimodalModel extends BaseModel
     {
         return $this->run($inputs, $parameters);
     }
+
+    /**
+     * Answer question about a document.
+     */
+    public function answerDocumentQuestion(string $question, $documentInput, array $parameters = []): array
+    {
+        $input = ['question' => $question, 'document' => $documentInput];
+        return $this->run($input, $parameters);
+    }
+
+    /**
+     * Answer question about an image (visual question answering).
+     */
+    public function answerVisualQuestion(string $question, $imageInput, array $parameters = []): array
+    {
+        $input = ['question' => $question, 'image' => $imageInput];
+        return $this->run($input, $parameters);
+    }
 }

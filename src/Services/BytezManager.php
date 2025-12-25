@@ -203,4 +203,300 @@ class BytezManager
         
         return $builder;
     }
+
+    // ============================================
+    // Text Task Helpers
+    // ============================================
+
+    /**
+     * Audio to text conversion (audio-text-to-text).
+     */
+    public function audioTextToText(string $modelId, $audioInput, array $parameters = [], ?string $providerKey = null): array
+    {
+        $model = $this->chat($modelId);
+        if ($providerKey) {
+            $model->withProviderKey($providerKey);
+        }
+        return $model->run($audioInput, $parameters);
+    }
+
+    /**
+     * Image to text conversion (image-text-to-text).
+     */
+    public function imageTextToText(string $modelId, $imageInput, ?string $prompt = null, array $parameters = [], ?string $providerKey = null): array
+    {
+        $input = $prompt ? ['image' => $imageInput, 'text' => $prompt] : $imageInput;
+        $model = $this->chat($modelId);
+        if ($providerKey) {
+            $model->withProviderKey($providerKey);
+        }
+        return $model->run($input, $parameters);
+    }
+
+    /**
+     * Video to text conversion (video-text-to-text).
+     */
+    public function videoTextToText(string $modelId, $videoInput, ?string $prompt = null, array $parameters = [], ?string $providerKey = null): array
+    {
+        $input = $prompt ? ['video' => $videoInput, 'text' => $prompt] : $videoInput;
+        $model = $this->chat($modelId);
+        if ($providerKey) {
+            $model->withProviderKey($providerKey);
+        }
+        return $model->run($input, $parameters);
+    }
+
+    /**
+     * Summarize text.
+     */
+    public function summarize(string $modelId, string $text, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('summarization')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($text);
+    }
+
+    /**
+     * Translate text.
+     */
+    public function translate(string $modelId, string $text, ?string $targetLanguage = null, array $parameters = [], ?string $providerKey = null): array
+    {
+        if ($targetLanguage) {
+            $parameters['target_language'] = $targetLanguage;
+        }
+        return $this->task('translation')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($text);
+    }
+
+    /**
+     * Answer a question based on context.
+     */
+    public function answerQuestion(string $modelId, string $question, ?string $context = null, array $parameters = [], ?string $providerKey = null): array
+    {
+        $input = $context ? ['question' => $question, 'context' => $context] : $question;
+        return $this->task('question-answering')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($input);
+    }
+
+    /**
+     * Extract features/embeddings from text.
+     */
+    public function extractFeatures(string $modelId, $input, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('feature-extraction')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($input);
+    }
+
+    /**
+     * Calculate sentence similarity.
+     */
+    public function sentenceSimilarity(string $modelId, string $sentence1, string $sentence2, array $parameters = [], ?string $providerKey = null): array
+    {
+        $input = ['source_sentence' => $sentence1, 'sentences' => [$sentence2]];
+        return $this->task('sentence-similarity')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($input);
+    }
+
+    /**
+     * Zero-shot text classification.
+     */
+    public function zeroShotClassify(string $modelId, string $text, array $candidateLabels, array $parameters = [], ?string $providerKey = null): array
+    {
+        $input = ['sequences' => $text, 'candidate_labels' => $candidateLabels];
+        return $this->task('zero-shot-classification')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($input);
+    }
+
+    /**
+     * Classify text.
+     */
+    public function classifyText(string $modelId, string $text, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('text-classification')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($text);
+    }
+
+    /**
+     * Classify tokens (NER, POS tagging, etc.).
+     */
+    public function classifyTokens(string $modelId, string $text, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('token-classification')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($text);
+    }
+
+    /**
+     * Fill mask in text.
+     */
+    public function fillMask(string $modelId, string $text, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('fill-mask')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($text);
+    }
+
+    // ============================================
+    // Image Task Helpers
+    // ============================================
+
+    /**
+     * Convert image to text.
+     */
+    public function imageToText(string $modelId, $imageInput, ?string $prompt = null, array $parameters = [], ?string $providerKey = null): array
+    {
+        $input = $prompt ? ['image' => $imageInput, 'text' => $prompt] : $imageInput;
+        return $this->task('image-to-text')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($input);
+    }
+
+    /**
+     * Zero-shot object detection.
+     */
+    public function zeroShotDetectObjects(string $modelId, $imageInput, array $candidateLabels, array $parameters = [], ?string $providerKey = null): array
+    {
+        $input = ['image' => $imageInput, 'candidate_labels' => $candidateLabels];
+        return $this->task('zero-shot-object-detection')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($input);
+    }
+
+    /**
+     * Zero-shot image classification.
+     */
+    public function zeroShotClassifyImage(string $modelId, $imageInput, array $candidateLabels, array $parameters = [], ?string $providerKey = null): array
+    {
+        $input = ['image' => $imageInput, 'candidate_labels' => $candidateLabels];
+        return $this->task('zero-shot-image-classification')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($input);
+    }
+
+    /**
+     * Extract image features/embeddings.
+     */
+    public function extractImageFeatures(string $modelId, $imageInput, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('image-feature-extraction')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($imageInput);
+    }
+
+    /**
+     * Segment image.
+     */
+    public function segmentImage(string $modelId, $imageInput, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('image-segmentation')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($imageInput);
+    }
+
+    /**
+     * Estimate depth in image.
+     */
+    public function estimateDepth(string $modelId, $imageInput, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('depth-estimation')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($imageInput);
+    }
+
+    /**
+     * Generate mask for image.
+     */
+    public function generateMask(string $modelId, $imageInput, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('mask-generation')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($imageInput);
+    }
+
+    /**
+     * Generate image unconditionally.
+     */
+    public function generateImageUnconditional(string $modelId, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('unconditional-image-generation')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run([]);
+    }
+
+    // ============================================
+    // Audio Task Helpers
+    // ============================================
+
+    /**
+     * Text to speech conversion.
+     */
+    public function textToSpeech(string $modelId, string $text, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('text-to-speech')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($text);
+    }
+
+    /**
+     * Text to audio conversion.
+     */
+    public function textToAudio(string $modelId, string $text, array $parameters = [], ?string $providerKey = null): array
+    {
+        return $this->task('text-to-audio')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($text);
+    }
+
+    // ============================================
+    // Multimodal Task Helpers
+    // ============================================
+
+    /**
+     * Answer question about a document.
+     */
+    public function answerDocumentQuestion(string $modelId, string $question, $documentInput, array $parameters = [], ?string $providerKey = null): array
+    {
+        $input = ['question' => $question, 'document' => $documentInput];
+        return $this->task('document-question-answering')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($input);
+    }
+
+    /**
+     * Answer question about an image (visual question answering).
+     */
+    public function answerVisualQuestion(string $modelId, string $question, $imageInput, array $parameters = [], ?string $providerKey = null): array
+    {
+        $input = ['question' => $question, 'image' => $imageInput];
+        return $this->task('visual-question-answering')
+            ->withModel($modelId)
+            ->withProviderKey($providerKey)
+            ->run($input);
+    }
 }
