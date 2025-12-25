@@ -1,0 +1,57 @@
+{
+    "name": "martin-lechene/laravel-bytez",
+    "description": "Laravel package for Bytez API - Unified interface for 175k+ AI models",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "bytez",
+        "ai",
+        "ml",
+        "machine-learning",
+        "chat",
+        "image",
+        "video",
+        "audio"
+    ],
+    "authors": [
+        {
+            "name": "Martin Lechene",
+            "email": "support@bytez.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^11.0|^12.0",
+        "illuminate/http": "^11.0|^12.0",
+        "illuminate/cache": "^11.0|^12.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0|^11.0",
+        "phpunit/phpunit": "^11.0",
+        "mockery/mockery": "^1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bytez\\LaravelBytez\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bytez\\LaravelBytez\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bytez\\LaravelBytez\\BytezServiceProvider"
+            ],
+            "aliases": {
+                "Bytez": "Bytez\\LaravelBytez\\Facades\\Bytez"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
