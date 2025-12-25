@@ -17,18 +17,18 @@
     "authors": [
         {
             "name": "Martin Lechene",
-            "email": "support@bytez.com"
+            "email": "contact+bytez@doganddev.eu"
         }
     ],
     "require": {
-        "php": "^8.2",
-        "illuminate/support": "^11.0|^12.0",
-        "illuminate/http": "^11.0|^12.0",
-        "illuminate/cache": "^11.0|^12.0",
+        "php": "^8.4",
+        "illuminate/support": "^12.0",
+        "illuminate/http": "^12.0",
+        "illuminate/cache": "^12.0",
         "guzzlehttp/guzzle": "^7.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^10.0|^11.0",
+        "orchestra/testbench": "^10.0",
         "phpunit/phpunit": "^11.0",
         "mockery/mockery": "^1.6"
     },
@@ -51,6 +51,11 @@
                 "Bytez": "Bytez\\LaravelBytez\\Facades\\Bytez"
             }
         }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:coverage": "phpunit --coverage-html coverage",
+        "test:unit": "phpunit --testsuite=Unit"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
