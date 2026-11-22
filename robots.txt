@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://martin-lechene.github.io/bytez-laravel/sitemap.xml

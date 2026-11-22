@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bytez pour Laravel · package Laravel DOG &amp; DEV</title>
+<meta name="description" content="Intégration Laravel de l'API Bytez : chat, texte, image, vidéo, audio et multimodal, avec cache et nouvelles tentatives.">
+<link rel="canonical" href="https://martin-lechene.github.io/bytez-laravel/">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#0f766e">
+<meta property="og:type" content="website"><meta property="og:site_name" content="DOG &amp; DEV">
+<meta property="og:title" content="Bytez pour Laravel"><meta property="og:description" content="Une seule clé d'API pour plus de 175 000 modèles d'IA.">
+<meta property="og:url" content="https://martin-lechene.github.io/bytez-laravel/">
+<meta name="twitter:card" content="summary"><meta name="twitter:title" content="Bytez pour Laravel"><meta name="twitter:description" content="Une seule clé d'API pour plus de 175 000 modèles d'IA.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"Bytez pour Laravel","description":"Intégration Laravel de l'API Bytez : chat, texte, image, vidéo, audio et multimodal, avec cache et nouvelles tentatives.","codeRepository":"https://github.com/martin-lechene/bytez-laravel","programmingLanguage":"PHP","license":"https://opensource.org/licenses/MIT","author":{"@type":"Organization","name":"DOG & DEV","url":"https://doganddev.eu"}}</script>
+<style>:root{--bg:#f4f6f5;--surface:#fff;--text:#0f1f1d;--muted:#5b6b68;--border:#d7dfdd;--primary:#0f766e;--primary-strong:#0b5a54;--on-primary:#fff;--accent:#d97706;--code:#0f1f1d;--code-text:#e6f2f0;--warn-bg:#fef3c7;--warn-text:#78350f}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b1513;--surface:#12201d;--text:#e6f2f0;--muted:#9bb0ac;--border:#243633;--primary:#2dd4bf;--primary-strong:#5eead4;--on-primary:#04201c;--accent:#fbbf24;--code:#050b0a;--code-text:#d3ebe7;--warn-bg:#3a2a07;--warn-text:#fde68a}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:var(--primary-strong)}a:focus-visible,button:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+.wrap{max-width:62rem;margin:0 auto;padding:0 1rem}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;gap:1rem;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:.02em;text-decoration:none;color:var(--text)}.brand span{color:var(--primary)}
+nav a{margin-left:1rem;text-decoration:none;color:var(--muted);font-weight:600}nav a:hover{color:var(--primary)}
+.hero{padding:3rem 0 2rem}
+.badge{display:inline-block;background:var(--warn-bg);color:var(--warn-text);padding:.25rem .75rem;border-radius:999px;font-size:.85rem;font-weight:700}
+h1{font-size:clamp(2rem,6vw,3.25rem);line-height:1.1;margin:.75rem 0 .5rem;letter-spacing:-.02em}
+.tag{font-size:1.25rem;color:var(--muted);max-width:40rem;margin:0 0 1.5rem}
+.cta{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn{display:inline-block;padding:.75rem 1.25rem;border-radius:.75rem;font-weight:700;text-decoration:none;border:2px solid var(--primary)}
+.btn.p{background:var(--primary);color:var(--on-primary)}.btn.s{color:var(--primary-strong);background:transparent}
+.btn:hover{transform:translateY(-1px)}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.25rem}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:.25rem .625rem;font-size:.875rem;color:var(--muted)}
+section{padding:2rem 0}h2{font-size:1.6rem;margin:0 0 1rem}
+.grid{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1rem}
+.card h3{margin:0 0 .25rem;font-size:1.05rem;color:var(--primary-strong)}.card p{margin:0;color:var(--muted)}
+pre{background:var(--code);color:var(--code-text);padding:1rem;border-radius:.75rem;overflow:auto;font-size:.9rem;line-height:1.5}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+p code,li code{background:var(--surface);border:1px solid var(--border);padding:.05rem .35rem;border-radius:.35rem;font-size:.9em}
+.note{background:var(--warn-bg);color:var(--warn-text);border-radius:.75rem;padding:1rem}
+ol.steps{padding-left:1.25rem}ol.steps li{margin-bottom:1rem}
+footer{border-top:1px solid var(--border);margin-top:2rem;padding:1.5rem 0 3rem;color:var(--muted);font-size:.9rem}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn:hover{transform:none}}</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a class="brand" href="https://doganddev.eu">DOG <span>&amp;</span> DEV</a>
+<nav aria-label="Navigation"><a href="#fonctions">Fonctions</a><a href="#installer">Installer</a><a href="#usage">Exemple</a><a href="https://github.com/martin-lechene/bytez-laravel">GitHub</a></nav></header>
+<main>
+<div class="hero">
+<span class="badge">Bêta · pas encore sur Packagist</span>
+<h1>Bytez pour Laravel</h1>
+<p class="tag">Une seule clé d'API pour plus de 175 000 modèles d'IA.</p>
+<div class="cta"><a class="btn p" href="#installer">Installer</a><a class="btn s" href="https://github.com/martin-lechene/bytez-laravel#readme">Lire la documentation</a></div>
+<div class="chips"><span class="chip">PHP ^8.4</span><span class="chip">Laravel 12</span><span class="chip">Licence MIT</span><span class="chip">martin-lechene/laravel-bytez</span></div>
+</div>
+<section id="fonctions"><h2>Ce que fait ce package</h2><p>Intégration Laravel de l'API Bytez : chat, texte, image, vidéo, audio et multimodal, avec cache et nouvelles tentatives.</p>
+<div class="grid"><div class="card"><h3>Facade et injection</h3><p>Utilise <code>Bytez::chat(...)</code> ou injecte le service.</p></div><div class="card"><h3>Compatible OpenAI</h3><p>Chat completions et text completions au format OpenAI.</p></div><div class="card"><h3>Tous types de modèles</h3><p>Chat, image, vidéo, audio, multimodal.</p></div><div class="card"><h3>Builder</h3><p>Construction fluide des requêtes.</p></div><div class="card"><h3>Cache et retry</h3><p>Mise en cache et nouvelles tentatives intégrées.</p></div><div class="card"><h3>Modèles fermés</h3><p>Clés de fournisseur possibles pour les modèles propriétaires.</p></div></div></section>
+<section id="installer"><h2>Installation</h2>
+<p>Le package n'est pas encore publié sur Packagist : on l'installe depuis le dépôt GitHub.</p>
+<ol class="steps"><li>Ajoute le dépôt et installe le package :<pre><code>composer config repositories.bytez-laravel vcs https://github.com/martin-lechene/bytez-laravel
+composer require martin-lechene/laravel-bytez:dev-main</code></pre></li>
+<li>Ensuite :<pre><code>php artisan vendor:publish --tag=bytez-config</code></pre></li><li>Ensuite :<pre><code># .env
+BYTEZ_API_KEY=ta-cle</code></pre></li></ol></section>
+<section id="usage"><h2>Exemple</h2><pre><code>use Bytez\LaravelBytez\Facades\Bytez;
+
+$response = Bytez::chat('openai-community/gpt-2')
+    -&gt;message('Hello, how are you?');</code></pre></section>
+
+<section><h2>Liens</h2><ul><li><a href="https://github.com/martin-lechene/bytez-laravel">Code source sur GitHub</a></li><li><a href="https://github.com/martin-lechene/bytez-laravel/issues">Signaler un problème</a></li><li><a href="https://doganddev.eu">DOG &amp; DEV</a></li></ul></section>
+</main>
+<footer>© DOG &amp; DEV · Package martin-lechene/laravel-bytez sous licence MIT · Contact : <a href="mailto:contact@doganddev.eu">contact@doganddev.eu</a></footer>
+</div>
+</body>
+</html>
