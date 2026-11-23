@@ -52,6 +52,10 @@ jobs:
 
       - name: Install dependencies
         run: |
+          # Laravel 10 and 11 are end-of-life and every release has a published advisory;
+          # Composer would refuse to install them. We still test against them because the
+          # package declares support for them, but only in this CI matrix.
+          composer config audit.block-insecure false
           composer require --dev "orchestra/testbench:${{ matrix.testbench }}" "phpunit/phpunit:${{ matrix.phpunit }}" --with-all-dependencies --no-interaction --no-progress
 
       - name: Run tests
