@@ -1,16 +1,48 @@
 # Bytez Laravel Package
 
-[![Latest Version](https://img.shields.io/packagist/v/martin-lechene/laravel-bytez.svg?style=flat-square)](https://packagist.org/packages/martin-lechene/laravel-bytez)
-[![Total Downloads](https://img.shields.io/packagist/dt/martin-lechene/laravel-bytez.svg?style=flat-square)](https://packagist.org/packages/martin-lechene/laravel-bytez)
-[![License](https://img.shields.io/packagist/l/martin-lechene/laravel-bytez.svg?style=flat-square)](https://packagist.org/packages/martin-lechene/laravel-bytez)
+[![Tests](https://github.com/martin-lechene/bytez-laravel/actions/workflows/tests.yml/badge.svg)](https://github.com/martin-lechene/bytez-laravel/actions/workflows/tests.yml)
+[![License](https://img.shields.io/github/license/martin-lechene/bytez-laravel.svg?style=flat-square)](LICENSE)
+[![PHP](https://img.shields.io/badge/PHP-8.2%20%7C%208.3%20%7C%208.4-777BB4.svg?style=flat-square)](composer.json)
+[![Laravel](https://img.shields.io/badge/Laravel-10%20%7C%2011%20%7C%2012%20%7C%2013-FF2D20.svg?style=flat-square)](composer.json)
 
-A complete Laravel package for integrating the Bytez API, allowing you to use 175k+ AI models (open-source and closed-source) with a single API key.
+A Laravel package for the [Bytez](https://bytez.com) API, allowing you to use 175k+ AI models (open-source and closed-source) with a single API key.
+
+> **Unofficial package.** This is an independent community package maintained by Dog and Dev. It is not published, endorsed or supported by Bytez. "Bytez" is the name of the third-party service this package talks to; the `Bytez\LaravelBytez` namespace only reflects that.
+>
+> **Beta.** The package is not on Packagist yet and has no tagged release yet. Install it from the GitHub repository (see below). Public APIs may still change.
+
+## Requirements
+
+- PHP 8.2 or higher
+- Laravel 10, 11, 12 or 13 (the `illuminate/support`, `illuminate/http` and `illuminate/cache` components)
+- A Bytez API key
+
+CI runs the test suite against PHP 8.2 to 8.4 and Laravel 10 to 13 (see the matrix in `.github/workflows/tests.yml`).
 
 ## 🚀 Installation
 
-```bash
-composer require martin-lechene/laravel-bytez
+The package is not on Packagist yet. Declare the GitHub repository as a VCS repository in your application's `composer.json`:
+
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/martin-lechene/bytez-laravel"
+        }
+    ]
+}
 ```
+
+Then require it. As there is no tag yet, use the `main` branch:
+
+```bash
+composer require martin-lechene/laravel-bytez:dev-main
+```
+
+Once a release is tagged and the package is submitted to Packagist, a plain `composer require martin-lechene/laravel-bytez` will be enough.
+
+Laravel auto-discovers the service provider and the `Bytez` facade alias.
 
 Publish the configuration file:
 
@@ -40,13 +72,24 @@ return [
     'cache' => [
         'enabled' => env('BYTEZ_CACHE_ENABLED', true),
         'ttl' => env('BYTEZ_CACHE_TTL', 3600),
+        'prefix' => env('BYTEZ_CACHE_PREFIX', 'bytez'),
     ],
     'provider_keys' => [
-        'openai' => env('OPENAI_API_KEY'),
-        'anthropic' => env('ANTHROPIC_API_KEY'),
+        // 'openai' => env('OPENAI_API_KEY'),
+        // 'anthropic' => env('ANTHROPIC_API_KEY'),
     ],
 ];
 ```
+
+| Key | Environment variable | Default | Description |
+|---|---|---|---|
+| `api_key` | `BYTEZ_API_KEY` | none | Your Bytez API key (required) |
+| `base_url` | `BYTEZ_BASE_URL` | `https://api.bytez.com` | API base URL |
+| `timeout` | `BYTEZ_TIMEOUT` | `30` | Request timeout in seconds |
+| `retry_attempts` | `BYTEZ_RETRY_ATTEMPTS` | `3` | Maximum number of attempts per request |
+| `retry_delay` | `BYTEZ_RETRY_DELAY` | `1000` | Base delay between attempts, in milliseconds |
+| `cache.enabled`, `cache.ttl`, `cache.prefix` | `BYTEZ_CACHE_*` | `true`, `3600`, `bytez` | Declared in the config file but **not read by the code yet** (see [Cache](#cache)) |
+| `provider_keys` | e.g. `ANTHROPIC_API_KEY` | empty | Default provider keys for closed-source models, indexed by provider name |
 
 ### Basic Usage
 
@@ -308,6 +351,8 @@ $response = $textToImage->generate('A beautiful sunset');
 
 The package provides dedicated helper methods for common tasks:
 
+> **Known limitation (beta):** the optional `$parameters` argument of these `Bytez::` helpers (and the `$targetLanguage` of `translate()`) is accepted but not yet forwarded to the API. To send model parameters, use the [Builder Pattern](#builder-pattern) (`Bytez::model(...)->withParameter(...)`) or a model class (`Bytez::chat(...)`, `Bytez::language(...)`...). The `$providerKey` argument is forwarded.
+
 #### Text Tasks
 
 ```php
@@ -429,7 +474,7 @@ try {
     $response = Bytez::chat('model-id')->message('Hello');
 } catch (BytezRateLimitException $e) {
     // Handle rate limits
-    $retryAfter = $e->getRetryAfter();
+    $retryAfter = $e->getRetryAfter(); // ?int, may be null
 } catch (BytezTimeoutException $e) {
     // Handle timeouts
 } catch (BytezException $e) {
@@ -439,25 +484,31 @@ try {
 
 ### Cache
 
-The package supports automatic caching for GET requests:
+GET requests made through `BytezClient::get()` (which `listModels()`, `listTasks()`, `listRunningModels()`, `TaskBuilder::getModels()` and `info()` use) are cached in your application's default cache store for 60 seconds:
 
 ```php
-// Cache is enabled by default for GET requests
-$models = Bytez::listModels(); // Automatically cached
+$models = Bytez::listModels(); // cached for 60 seconds
 
-// Disable cache for a specific request
 $client = Bytez::getClient();
-$models = $client->get('/models/v2/models', [], null, null); // No cache
+
+// Choose the TTL (in seconds) for one call
+$models = $client->get('/models/v2/models', [], null, 300);
+
+// Bypass the cache: request() does not use the cache unless asked to
+$models = $client->request('GET', '/models/v2/models');
+
+// Clear one cached key (the key is 'bytez:' followed by an md5 hash);
+// with no argument, flushes the 'bytez' tag when the cache driver supports tags
+$client->clearCache();
 ```
+
+Note: the `cache.enabled`, `cache.ttl` and `cache.prefix` options of `config/bytez.php` are not wired to the client yet. POST requests (model runs) are never cached.
 
 ### Retry Logic
 
-The package includes automatic retry logic:
-
-- Automatic retry on server errors (5xx)
-- Retry with exponential backoff
-- Special handling for rate limits (429)
-- Configuration via `retry_attempts` and `retry_delay`
+- Server errors (5xx) and network errors are retried up to `retry_attempts` times in total, waiting `retry_delay` ms multiplied by the attempt number (linear backoff).
+- Client errors (4xx) are not retried.
+- A rate limit response (429) is not retried: after a short wait the package throws `BytezRateLimitException`.
 
 ### Real-World Examples
 
@@ -534,8 +585,7 @@ $summaries = [];
 foreach ($articles as $id => $article) {
     $summaries[$id] = Bytez::summarize(
         'facebook/bart-large-cnn',
-        $article,
-        ['max_length' => 150]
+        $article
     )['output'];
 }
 ```
@@ -554,8 +604,8 @@ $documentEmbedding = Bytez::extractFeatures(
     'document text'
 )['output'];
 
-// Calculate similarity (cosine similarity)
-$similarity = $this->cosineSimilarity($queryEmbedding, $documentEmbedding);
+// Calculate similarity with your own helper (not provided by the package)
+$similarity = cosineSimilarity($queryEmbedding, $documentEmbedding);
 ```
 
 #### Audio Processing Pipeline
@@ -671,21 +721,32 @@ Run only unit tests:
 composer test:unit
 ```
 
+The tests are unit tests that mock the HTTP layer: they do not call the Bytez API and need no API key.
+
+## 📋 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+
 ## 📝 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) and our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## 🔒 Security
 
-If you discover a security vulnerability, please email contact+bytez@doganddev.eu instead of using the issue tracker. See [SECURITY.md](SECURITY.md) for more information.
+If you discover a security vulnerability, please email contact@doganddev.eu instead of using the issue tracker. See [SECURITY.md](SECURITY.md) for more information.
+
+## 📬 Contact
+
+Dog and Dev / Martin Lechene: contact@doganddev.eu
 
 ## 🔗 Links
 
 - [Bytez Documentation](https://docs.bytez.com)
 - [API Dashboard](https://dashboard.bytez.com)
-- [GitHub Repository](https://github.com/martin-lechene/laravel-bytez)
-- [Issue Tracker](https://github.com/martin-lechene/laravel-bytez/issues)
+- [GitHub Repository](https://github.com/martin-lechene/bytez-laravel)
+- [Issue Tracker](https://github.com/martin-lechene/bytez-laravel/issues)
+- [More examples](EXAMPLES.md) and [package structure](PACKAGE_STRUCTURE.md)

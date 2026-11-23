@@ -7,13 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- Upgraded PHP requirement from ^8.2 to ^8.4
-- Upgraded Laravel support to ^12.0 only (removed Laravel 11 support)
-- Updated Orchestra Testbench to ^10.0 for Laravel 12 compatibility
-- Added Composer scripts for testing (test, test:coverage, test:unit)
+### Added
+- GitHub Actions workflow running the tests on PHP 8.2-8.4 and Laravel 10-13, plus `composer validate --strict`
+- `CODE_OF_CONDUCT.md`, issue and pull request templates, Dependabot configuration (Composer and GitHub Actions)
+- `support`, `homepage` and `config.sort-packages` in `composer.json`
 
-## [1.0.0] - 2024-01-XX
+### Changed
+- Widened the supported versions to PHP ^8.2 and Laravel 10 to 13 (previously PHP ^8.4 and Laravel ^12 only); Orchestra Testbench ^8 to ^11 and PHPUnit ^10.5 to ^12 for development
+- Removed `minimum-stability: dev` from `composer.json`
+- Contact address changed to contact@doganddev.eu
+- README: unofficial/beta notice, VCS installation instructions, requirements, configuration table, corrected cache and retry documentation
+- Completed `.gitattributes` export-ignore rules and `.gitignore`
+
+### Fixed
+- Service provider injected the cache manager instead of a cache repository into `BytezClient`, which raised a `TypeError` when resolving the client
+- `TaskBuilder::withProviderKey()` now accepts `null`, so the `Bytez::summarize()`-style helpers no longer fail when no provider key is given
+- `ChatModel::stream()` uses an explicit nullable `callable` type (implicit nullable is deprecated in PHP 8.4)
+- Cache unit test no longer relies on a mocked facade and now checks that a second GET is served from the cache
+
+## [1.0.0] - initial development (never tagged)
 
 ### Added
 - Initial release of Bytez Laravel Package
