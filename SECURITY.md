@@ -2,17 +2,17 @@
 
 ## Supported Versions
 
-We actively support the following versions with security updates:
+This package is in beta and has no published release yet. Security fixes are applied to the `main` branch and will be included in the next tagged release:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
+| `main` (beta, not yet tagged) | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
 If you discover a security vulnerability, please **do not** open a public issue. Instead, send an email to:
 
-**contact+bytez@doganddev.eu**
+**contact@doganddev.eu**
 
 Please include:
 - A description of the vulnerability
