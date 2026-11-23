@@ -1,11 +1,11 @@
 # Contributing to Bytez Laravel Package
 
-Thank you for considering contributing to the Bytez Laravel Package! This document provides guidelines and instructions for contributing.
+Thank you for considering contributing to the Bytez Laravel Package! This document provides guidelines and instructions for contributing. By participating, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Getting Started
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/your-username/laravel-bytez.git`
+2. Clone your fork: `git clone https://github.com/your-username/bytez-laravel.git`
 3. Install dependencies: `composer install`
 4. Create a new branch: `git checkout -b feature/your-feature-name`
 
