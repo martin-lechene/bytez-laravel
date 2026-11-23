@@ -1,6 +1,6 @@
 {
     "name": "martin-lechene/laravel-bytez",
-    "description": "Laravel package for Bytez API - Unified interface for 175k+ AI models",
+    "description": "Unofficial Laravel package for the Bytez API - a unified interface for 175k+ AI models",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -14,22 +14,29 @@
         "video",
         "audio"
     ],
+    "homepage": "https://github.com/martin-lechene/bytez-laravel",
     "authors": [
         {
             "name": "Martin Lechene",
-            "email": "contact+bytez@doganddev.eu"
+            "email": "contact@doganddev.eu"
         }
     ],
+    "support": {
+        "issues": "https://github.com/martin-lechene/bytez-laravel/issues",
+        "source": "https://github.com/martin-lechene/bytez-laravel",
+        "email": "contact@doganddev.eu",
+        "docs": "https://github.com/martin-lechene/bytez-laravel#readme"
+    },
     "require": {
-        "php": "^8.4",
-        "illuminate/support": "^12.0",
-        "illuminate/http": "^12.0",
-        "illuminate/cache": "^12.0",
+        "php": "^8.2",
+        "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/http": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/cache": "^10.0|^11.0|^12.0|^13.0",
         "guzzlehttp/guzzle": "^7.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^10.0",
-        "phpunit/phpunit": "^11.0",
+        "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
+        "phpunit/phpunit": "^10.5|^11.0|^12.0",
         "mockery/mockery": "^1.6"
     },
     "autoload": {
@@ -57,6 +64,9 @@
         "test:coverage": "phpunit --coverage-html coverage",
         "test:unit": "phpunit --testsuite=Unit"
     },
-    "minimum-stability": "dev",
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
