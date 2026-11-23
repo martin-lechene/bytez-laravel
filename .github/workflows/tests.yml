@@ -1,0 +1,58 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: composer validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - run: composer validate --strict --no-check-lock
+
+  tests:
+    name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { php: '8.2', laravel: '10', testbench: '^8.0', phpunit: '^10.5' }
+          - { php: '8.3', laravel: '10', testbench: '^8.0', phpunit: '^10.5' }
+          - { php: '8.2', laravel: '11', testbench: '^9.0', phpunit: '^10.5|^11.0' }
+          - { php: '8.3', laravel: '11', testbench: '^9.0', phpunit: '^10.5|^11.0' }
+          - { php: '8.4', laravel: '11', testbench: '^9.0', phpunit: '^10.5|^11.0' }
+          - { php: '8.2', laravel: '12', testbench: '^10.0', phpunit: '^11.0' }
+          - { php: '8.3', laravel: '12', testbench: '^10.0', phpunit: '^11.0' }
+          - { php: '8.4', laravel: '12', testbench: '^10.0', phpunit: '^11.0' }
+          - { php: '8.3', laravel: '13', testbench: '^11.0', phpunit: '^12.0' }
+          - { php: '8.4', laravel: '13', testbench: '^11.0', phpunit: '^12.0' }
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: |
+          composer require --dev "orchestra/testbench:${{ matrix.testbench }}" "phpunit/phpunit:${{ matrix.phpunit }}" --with-all-dependencies --no-interaction --no-progress
+
+      - name: Run tests
+        run: vendor/bin/phpunit

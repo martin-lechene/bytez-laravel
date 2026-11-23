@@ -1,0 +1,41 @@
+name: Bug report
+description: Report something that does not work as documented
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Never paste API keys or provider keys.
+        For security issues, do not open a public issue: see SECURITY.md.
+  - type: input
+    id: package-version
+    attributes:
+      label: Package version
+      description: Tag, or commit hash if you install from the VCS repository
+    validations:
+      required: true
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP version
+    validations:
+      required: true
+  - type: input
+    id: laravel-version
+    attributes:
+      label: Laravel version
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Steps to reproduce, expected behavior and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error messages or logs
+      description: Remove any secret before pasting
+      render: shell
