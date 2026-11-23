@@ -25,7 +25,7 @@ class BytezServiceProvider extends ServiceProvider
                 config('bytez.timeout', 30),
                 config('bytez.retry_attempts', 3),
                 config('bytez.retry_delay', 1000),
-                $app['cache']
+                $app['cache.store']
             );
         });
 

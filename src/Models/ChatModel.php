@@ -49,7 +49,7 @@ class ChatModel extends BaseModel
      * 
      * @deprecated Use Bytez::chatCompletions() with stream() for OpenAI-compatible streaming
      */
-    public function stream(string $message, array $parameters = [], callable $callback = null): \Generator
+    public function stream(string $message, array $parameters = [], ?callable $callback = null): \Generator
     {
         $parameters = $this->mergeParameters($parameters);
         $parameters['stream'] = true;

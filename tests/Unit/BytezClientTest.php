@@ -118,28 +118,21 @@ class BytezClientTest extends TestCase
 
     public function test_cache_is_used_for_get_requests()
     {
-        Cache::shouldReceive('get')
-            ->once()
-            ->andReturn(null);
-
-        Cache::shouldReceive('put')
-            ->once()
-            ->andReturn(true);
-
+        // Only one queued response: a second HTTP call would fail the test,
+        // so the second get() must be served from the cache.
         $mock = new MockHandler([
             new Response(200, [], json_encode(['data' => 'cached'])),
         ]);
 
-        $handlerStack = HandlerStack::create($mock);
-        $guzzleClient = new Client(['handler' => $handlerStack]);
+        $guzzleClient = new Client(['handler' => HandlerStack::create($mock)]);
 
-        $client = new BytezClient('test-key', 'https://api.bytez.com', 30, 3, 1000, Cache::store());
+        $client = new BytezClient('test-key', 'https://api.bytez.com', 30, 3, 1000, Cache::store('array'));
         $reflection = new \ReflectionClass($client);
         $property = $reflection->getProperty('httpClient');
         $property->setAccessible(true);
         $property->setValue($client, $guzzleClient);
 
-        $result = $client->get('/test', [], null, 60);
-        $this->assertEquals(['data' => 'cached'], $result);
+        $this->assertEquals(['data' => 'cached'], $client->get('/test', [], null, 60));
+        $this->assertEquals(['data' => 'cached'], $client->get('/test', [], null, 60));
     }
 }

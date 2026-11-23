@@ -29,7 +29,7 @@ class TaskBuilder
     /**
      * Set the provider key for closed-source models.
      */
-    public function withProviderKey(string $providerKey): self
+    public function withProviderKey(?string $providerKey): self
     {
         $this->providerKey = $providerKey;
         return $this;
